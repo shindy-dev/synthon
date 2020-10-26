@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<annotation>
+    <hoge>2</hoge>
+    <huge>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>f</item>
+        <item>
+            <item>a</item>
+            <item>0</item>
+            <item>5</item>
+            <item>5</item>
+        </item>
+    </huge>
+    <buga>
+        <a>1</a>
+    </buga>
+    <rect>
+        <area>30</area>
+        <width>5</width>
+        <height>6</height>
+    </rect>
+</annotation>

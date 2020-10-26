@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "venv/bin/python",
+    "terminal.integrated.shell.osx": "bash",
+    "terminal.integrated.shellArgs.osx": [
+        "--rcfile",
+        "/Users/shindy/Documents/python_utils/venv/bin/activate"
+    ]
+}
