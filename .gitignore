@@ -128,5 +128,3 @@ dmypy.json
 .vscode/
 main.py
 test.xml
-back
-.DS_Store
