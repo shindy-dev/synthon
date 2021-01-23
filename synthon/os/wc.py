@@ -4,9 +4,10 @@ created: 2020/10/03
 github: https://github.com/shindy-dev
 """
 __all__ = (
+    "wc_c",
     "wc_l",
     "wc_m",
-    "wc_c",
+    "wc_w",
 )
 import os
 from typing import List, Dict
@@ -39,41 +40,13 @@ def _get_paths(path: str, exts: List[str], excludes: List[str]) -> List[str]:
     return paths
 
 
-def wc_l(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
-    """
-    Get the number of lines from files like wc -l command
-    """
-    paths = _get_paths(path, exts, excludes)
-    print(paths)
-    sum_lines = 0
-    for path in paths:
-        with open(path, "rb") as f:
-            sum_lines += len(f.readlines())
-    return sum_lines
-
-
-def wc_m(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
-    """
-    Get the number of multi-byte from files like wc -m command
-    """
-    paths = _get_paths(path, exts, excludes)
-    sum_multibytes = 0
-    print(paths)
-    for path in paths:
-        with open(path, "rb") as f:
-            sum_multibytes += sum(
-                [len(line.decode().strip("\n")) for line in f.readlines()]
-            )
-    return sum_multibytes
-
-
+# バイト数取得
 def wc_c(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
     """
     Get the number of bytes from files like wc -c command
     """
     paths = _get_paths(path, exts, excludes)
     sum_bytes = 0
-    print(paths)
     for path in paths:
         with open(path, "rb") as f:
             sum_bytes += sum(
@@ -82,5 +55,54 @@ def wc_c(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
     return sum_bytes
 
 
+# 行数取得
+def wc_l(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
+    """
+    Get the number of lines from files like wc -l command
+    """
+    paths = _get_paths(path, exts, excludes)
+    sum_lines = 0
+    for path in paths:
+        with open(path, "rb") as f:
+            sum_lines += len(f.readlines())
+    return sum_lines
+
+
+# 文字数（マルチバイト）取得
+def wc_m(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
+    """
+    Get the number of multi-byte from files like wc -m command
+    """
+    paths = _get_paths(path, exts, excludes)
+    sum_multibytes = 0
+    for path in paths:
+        with open(path, "rb") as f:
+            sum_multibytes += sum(
+                [len(line.decode().strip("\n")) for line in f.readlines()]
+            )
+    return sum_multibytes
+
+
+# 単語数取得
+def wc_w(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
+    """
+    Get the number of bytes from files like wc -w command
+    """
+    paths = _get_paths(path, exts, excludes)
+    sum_bytes = 0
+    for path in paths:
+        with open(path, "rb") as f:
+            sum_bytes += sum(
+                [len(line.decode().strip("\n").split()) for line in f.readlines()]
+            )
+    return sum_bytes
+
+
 if __name__ == "__main__":
-    print(wc_m("ls.py"))
+    import wc
+
+    path = os.path.join(os.path.dirname(__file__), "ls.py")
+    print(f"word: {wc.wc_w(path)}")
+    print(f"bytes-charactar: {wc.wc_m(path)}")
+    print(f"multibytes-charactar: {wc.wc_c(path)}")
+    print(f"lines: {wc.wc_l(path)}")

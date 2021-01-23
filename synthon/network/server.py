@@ -6,7 +6,11 @@ github: https://github.com/shindy-dev
 
 import datetime
 import socketserver
-from network import _Transceiver
+
+try:
+    from synthon.network._transceiver import _Transceiver
+except ImportError:
+    from _transceiver import _Transceiver
 
 
 class ThreadingTCPServer(socketserver.ThreadingTCPServer):
@@ -36,3 +40,14 @@ class RequestHandler(socketserver.BaseRequestHandler, _Transceiver):
             print(f"invalid query: {query}")
         finally:
             self.request.close()
+
+
+if __name__ == "__main__":
+    from server import ThreadingTCPServer, RequestHandler
+
+    class MyRequestHandler(RequestHandler):
+        def handle_hello(self, query):
+            print(query)
+            self.send("こんにちは".encode(RequestHandler.ENCODING))
+
+    ThreadingTCPServer(("localhost", 22222), MyRequestHandler).serve_forever()

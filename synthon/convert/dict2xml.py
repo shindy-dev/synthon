@@ -9,10 +9,12 @@ __all__ = (
     "write_xml",
 )
 
-import os, sys
 import copy
-import xml.etree.ElementTree as ET
+import os
+import sys
 from typing import Any, Dict, List
+import xml.etree.ElementTree as ET
+import xml.dom.minidom as md
 
 
 def dict2xml(elements: Dict[str, Any], root_name: str = "root", set_type: bool = False):
@@ -30,10 +32,11 @@ def dict2xml(elements: Dict[str, Any], root_name: str = "root", set_type: bool =
     return root
 
 
-def write_xml(
-    root: ET.Element, path: str, encoding: str = "utf-8", xml_declaration=True
-):
-    ET.ElementTree(root).write(path, encoding, xml_declaration)
+def write_xml(root: ET.Element, path: str, encoding: str = "utf-8"):
+    with open(path, "w") as f:
+        md.parseString(ET.tostring(root)).writexml(
+            f, encoding=encoding, newl="\n", indent="", addindent="  "
+        )
 
 
 def _h(sub: ET.Element, v: Any, set_type: bool):

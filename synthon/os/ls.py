@@ -5,21 +5,14 @@ github: https://github.com/shindy-dev
 """
 
 __all__ = (
-    "ls_all",
     "ls",
+    "ls_all",
     "ls_dir",
     "ls_file",
     "ls_tree",
 )
 import os
 from typing import List, Dict
-
-
-def ls_all(path: str) -> List[str]:
-    """
-    Get all file and folder list from path.
-    """
-    return [f for f in os.listdir(path)]
 
 
 def ls(path: str, get_hidden: bool = False) -> List[str]:
@@ -32,6 +25,13 @@ def ls(path: str, get_hidden: bool = False) -> List[str]:
         if get_hidden
         else [f for f in os.listdir(path) if not f.startswith(".")]
     )
+
+
+def ls_all(path: str) -> List[str]:
+    """
+    Get all file and folder list from path.
+    """
+    return [f for f in os.listdir(path)]
 
 
 def ls_dir(path: str, get_hidden: bool = False) -> List[str]:

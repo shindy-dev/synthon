@@ -9,7 +9,7 @@ import datetime
 import time
 import os
 from dataclasses import dataclass, fields
-from typing import Any, ClassVar, List, Dict
+from typing import Any, ClassVar, Dict, List
 
 
 def _fmt(*args: List[Any], show: bool = False):
@@ -47,7 +47,7 @@ class stopwatch:
     """
 
     # history
-    _hist: list[_sw_e] = []
+    _hist: List[_sw_e] = []
 
     def __new__(cls, func: Any) -> Any:
         if not callable(func):

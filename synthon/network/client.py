@@ -5,7 +5,11 @@ github: https://github.com/shindy-dev
 """
 
 import socket
-from network import _Transceiver
+
+try:
+    from synthon.network._transceiver import _Transceiver
+except ImportError:
+    from _transceiver import _Transceiver
 
 
 class Client(_Transceiver):
@@ -28,3 +32,17 @@ class Client(_Transceiver):
             return ret
 
         return inner
+
+
+if __name__ == "__main__":
+
+    from client import Client
+
+    class MyClient(Client):
+        @Client.req
+        def request_hello(self, query):
+            bytesData = self.recieve()
+            return bytesData.decode(Client.ENCODING)
+
+    client = MyClient(("localhost", 22222))
+    print(client.request_hello({"mode": "hello"}))
