@@ -4,6 +4,7 @@ created: 2021/01/23
 github: https://github.com/shindy-dev
 """
 
+import os
 import json
 from typing import Any, Dict
 
@@ -61,7 +62,7 @@ class __TransceiverMeta(type):
 
     @MAX_DATA_SIZE.setter
     def MAX_DATA_SIZE(cls, v: int):
-        cls.__set_range_value(
+        cls.__set_value(
             cls.__MAX_QUERY_SIZE,
             "MAX_DATA_SIZE",
             v,
@@ -71,25 +72,31 @@ class __TransceiverMeta(type):
 
 
 class _Transceiver(metaclass=__TransceiverMeta):
-    def recieve(self, max_size: int = -1) -> bytes:
-        if max_size < 0:
-            max_size = _Transceiver.MAX_DATA_SIZE
+
+    def recieve(self) -> bytes:
+        self.request.settimeout(_Transceiver.TIMEOUT)
+        return self.request.recv(_Transceiver.BUFF_SIZE)
+
+    def recievefile(self) -> bytes:
+        size = int(self.recieve().decode())
+        self.send("size recieved".encode(_Transceiver.ENCODING))
+        
         self.request.settimeout(_Transceiver.TIMEOUT)
         bytesData: bytearray = bytearray()
-        while True:
+        while len(bytesData) < size:
             packet: bytes = self.request.recv(_Transceiver.BUFF_SIZE)
             bytesData.extend(packet)
-            if len(packet) < _Transceiver.BUFF_SIZE or len(bytesData) > max_size:
-                break
         return bytes(bytesData)
 
     def recvQuery(self) -> Dict[str, Any]:
-        return self._parseQuery(self.recieve(_Transceiver.MAX_QUERY_SIZE))
+        return self._parseQuery(self.recieve())
 
     def send(self, bytesData: bytes):
         self.request.send(bytesData)
 
     def sendfile(self, path: str):
+        self.send(str(os.path.getsize(path)).encode(_Transceiver.ENCODING))
+        self.recieve().decode()
         with open(path, "rb") as file:
             self.request.sendfile(file)
 

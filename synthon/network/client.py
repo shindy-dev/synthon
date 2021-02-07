@@ -24,7 +24,8 @@ class Client(_Transceiver):
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as request:
                 self.request = request
                 self.request.connect(self.fmt)
-                self.sendQuery(args[0])
+                kwargs["mode"] = req_func.__name__.split("_")[-1]
+                self.sendQuery(kwargs)
                 ret = req_func(self, *args, **kwargs)
             self.request.close()
             self.request = None
@@ -36,13 +37,23 @@ class Client(_Transceiver):
 
 if __name__ == "__main__":
 
+    import os
     from client import Client
 
     class MyClient(Client):
         @Client.req
-        def request_hello(self, query):
+        def request_hello(self, **query):
             bytesData = self.recieve()
             return bytesData.decode(Client.ENCODING)
 
+
+        @Client.req
+        def request_sendfile(self, **query):
+            self.recieve()
+            self.sendfile(query['path'])
+
     client = MyClient(("localhost", 22222))
-    print(client.request_hello({"mode": "hello"}))
+    print(client.request_hello())
+    with open("hoge.txt", mode="w") as f:
+        f.write("test")
+    client.request_sendfile(path="hoge.txt")

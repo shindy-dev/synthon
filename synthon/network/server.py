@@ -43,11 +43,17 @@ class RequestHandler(socketserver.BaseRequestHandler, _Transceiver):
 
 
 if __name__ == "__main__":
+    import os
     from server import ThreadingTCPServer, RequestHandler
 
     class MyRequestHandler(RequestHandler):
         def handle_hello(self, query):
-            print(query)
             self.send("こんにちは".encode(RequestHandler.ENCODING))
-
+        
+        def handle_sendfile(self, query):
+            self.send(b"please")
+            bytesData = self.recievefile()
+            with open(f"【コピー】{os.path.basename(query['path'])}", mode="wb") as f:
+                f.write(bytesData)
+    
     ThreadingTCPServer(("localhost", 22222), MyRequestHandler).serve_forever()
