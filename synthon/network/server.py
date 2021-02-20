@@ -31,15 +31,23 @@ class ThreadingTCPServer(socketserver.ThreadingTCPServer):
 
 
 class RequestHandler(socketserver.BaseRequestHandler, _Transceiver):
+    def on_handle(timestamp: datetime, ip: str, query: dict):
+        pass
+
     def handle(self):
-        print(f"{datetime.datetime.now()}: {self.client_address[0]}")
+        ts = datetime.datetime.now()
+        ip = self.client_address[0]
+        print(f"[o]{ts}: {ip}")
+        query: dict = {}
         try:
             query: dict = self.recvQuery()
             getattr(self, f"handle_{query['mode']}")(query)
-        except KeyError:
+        except Exception:
             print(f"invalid query: {query}")
         finally:
             self.request.close()
+            print(f"[x]{ts}: {ip}")
+            self.on_handle(ts, ip, query)
 
 
 if __name__ == "__main__":
