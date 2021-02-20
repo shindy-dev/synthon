@@ -72,21 +72,32 @@ class __TransceiverMeta(type):
 
 
 class _Transceiver(metaclass=__TransceiverMeta):
-
     def recieve(self) -> bytes:
         self.request.settimeout(_Transceiver.TIMEOUT)
         return self.request.recv(_Transceiver.BUFF_SIZE)
 
-    def recievefile(self) -> bytes:
+    def _get_filesize(self) -> int:
         size = int(self.recieve().decode())
         self.send("size recieved".encode(_Transceiver.ENCODING))
-        
+        return size
+
+    def recievefile(self) -> bytes:
+        size = self._get_filesize()
         self.request.settimeout(_Transceiver.TIMEOUT)
         bytesData: bytearray = bytearray()
         while len(bytesData) < size:
             packet: bytes = self.request.recv(_Transceiver.BUFF_SIZE)
             bytesData.extend(packet)
         return bytes(bytesData)
+
+    def recievefile_yield(self) -> bytes:
+        size = self._get_filesize()
+        self.request.settimeout(_Transceiver.TIMEOUT)
+        bytesData: bytearray = bytearray()
+        while len(bytesData) < size:
+            packet: bytes = self.request.recv(_Transceiver.BUFF_SIZE)
+            bytesData.extend(packet)
+            yield packet, len(bytesData), size
 
     def recvQuery(self) -> Dict[str, Any]:
         return self._parseQuery(self.recieve())

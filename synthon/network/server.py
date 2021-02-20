@@ -49,11 +49,16 @@ if __name__ == "__main__":
     class MyRequestHandler(RequestHandler):
         def handle_hello(self, query):
             self.send("こんにちは".encode(RequestHandler.ENCODING))
-        
+
         def handle_sendfile(self, query):
             self.send(b"please")
-            bytesData = self.recievefile()
-            with open(f"【コピー】{os.path.basename(query['path'])}", mode="wb") as f:
-                f.write(bytesData)
-    
+            # bytesData = self.recievefile()
+            # with open(f"【コピー】{os.path.basename(query['path'])}", mode="wb") as f:
+            #     f.write(bytesData)
+
+            for packet, current_size, size in self.recievefile_yield():
+                # print(f"{current_size/1024**2}/{size/1024**2}")
+                with open(f"【コピー】{os.path.basename(query['path'])}", mode="ab") as f:
+                    f.write(packet)
+
     ThreadingTCPServer(("localhost", 22222), MyRequestHandler).serve_forever()
