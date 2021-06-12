@@ -1,6 +1,7 @@
 import os
 from synthon.network.server import ThreadingTCPServer, RequestHandler
 
+
 class MyRequestHandler(RequestHandler):
     def on_handle(self, ts, ip, query):
         print(ts, ip, query)

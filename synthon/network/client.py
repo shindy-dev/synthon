@@ -46,11 +46,10 @@ if __name__ == "__main__":
             bytesData = self.recieve()
             return bytesData.decode(Client.ENCODING)
 
-
         @Client.req
         def request_sendfile(self, **query):
             self.recieve()
-            self.sendfile(query['path'])
+            self.sendfile(query["path"])
 
     client = MyClient(("localhost", 22222))
     print(client.request_hello())

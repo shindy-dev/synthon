@@ -1,6 +1,7 @@
 import os
 from synthon.network.client import Client
 
+
 class MyClient(Client):
     @Client.req
     def request_hello(self, **query):
@@ -10,5 +11,4 @@ class MyClient(Client):
     @Client.req
     def request_sendfile(self, **query):
         self.recieve()
-        self.sendfile(query['path'])
-
+        self.sendfile(query["path"])
