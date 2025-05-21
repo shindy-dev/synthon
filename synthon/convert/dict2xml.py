@@ -9,10 +9,7 @@ __all__ = (
     "write_xml",
 )
 
-import copy
-import os
-import sys
-from typing import Any, Dict, List
+from typing import Any, Dict
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as md
 

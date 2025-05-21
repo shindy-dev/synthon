@@ -57,7 +57,7 @@ def ls_tree(path: str = ".", get_hidden: bool = False) -> Dict[str, object]:
     """
     return {
         f: (
-            ls_tree(os.path.join(path, f))
+            ls_tree(os.path.join(path, f), get_hidden=get_hidden)
             if os.path.isdir(os.path.join(path, f))
             else None
         )

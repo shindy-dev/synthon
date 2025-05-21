@@ -5,6 +5,7 @@ github: https://github.com/shindy-dev
 """
 
 import socket
+from typing import Tuple
 
 try:
     from synthon.network._transceiver import _Transceiver
@@ -13,7 +14,7 @@ except ImportError:
 
 
 class Client(_Transceiver):
-    def __init__(self, fmt: tuple):
+    def __init__(self, fmt: Tuple[str, int]):
         self.fmt = fmt
         self.request: socket.socket = None
 
@@ -27,7 +28,6 @@ class Client(_Transceiver):
                 kwargs["mode"] = req_func.__name__.split("_")[-1]
                 self.sendQuery(kwargs)
                 ret = req_func(self, *args, **kwargs)
-            self.request.close()
             self.request = None
 
             return ret
@@ -37,7 +37,6 @@ class Client(_Transceiver):
 
 if __name__ == "__main__":
 
-    import os
     from client import Client
 
     class MyClient(Client):

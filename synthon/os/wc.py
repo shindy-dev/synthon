@@ -49,9 +49,8 @@ def wc_c(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
     sum_bytes = 0
     for path in paths:
         with open(path, "rb") as f:
-            sum_bytes += sum(
-                [len(line.decode().strip("\n").encode()) for line in f.readlines()]
-            )
+            sum_bytes += len(f.read())
+                
     return sum_bytes
 
 
@@ -86,16 +85,16 @@ def wc_m(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
 # 単語数取得
 def wc_w(path: str, exts: List[str] = [], excludes: List[str] = []) -> int:
     """
-    Get the number of bytes from files like wc -w command
+    Get the number of words from files like wc -w command
     """
     paths = _get_paths(path, exts, excludes)
-    sum_bytes = 0
+    sum_words = 0
     for path in paths:
         with open(path, "rb") as f:
-            sum_bytes += sum(
+            sum_words += sum(
                 [len(line.decode().strip("\n").split()) for line in f.readlines()]
             )
-    return sum_bytes
+    return sum_words
 
 
 if __name__ == "__main__":

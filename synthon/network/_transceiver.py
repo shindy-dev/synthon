@@ -18,9 +18,9 @@ class __TransceiverMeta(type):
         cls.__MAX_DATA_SIZE: int = 5 * 1024 ** 3  # 5GiB
 
     @classmethod
-    def __set_value(cls, priv: int, n: str, v: int, minv: int, maxv: int):
+    def __set_value(cls, attrname: str, n: str, v: int, minv: int, maxv: int):
         if minv <= v and v <= maxv:
-            priv = v
+            setattr(cls, attrname, v)
         else:
             raise Exception(f"{n} = {v} (Expected: {minv} <= {n} <= {maxv})")
 
@@ -30,7 +30,7 @@ class __TransceiverMeta(type):
 
     @TIMEOUT.setter
     def TIMEOUT(cls, v: int):
-        cls.__set_value(cls.__TIMEOUT, "TIMEOUT", v, 0, 10 ** 2)
+        cls.__set_value("__TIMEOUT", "TIMEOUT", v, 0, 10 ** 2)
 
     @property
     def ENCODING(cls) -> str:
@@ -46,7 +46,7 @@ class __TransceiverMeta(type):
 
     @BUFF_SIZE.setter
     def BUFF_SIZE(cls, v: int):
-        cls.__set_value(cls.__BUFF_SIZE, "BUFF_SIZE", v, 128, 1024 ** 2)
+        cls.__set_value("__BUFF_SIZE", "BUFF_SIZE", v, 128, 1024 ** 2)
 
     @property
     def MAX_QUERY_SIZE(cls) -> int:
@@ -54,7 +54,7 @@ class __TransceiverMeta(type):
 
     @MAX_QUERY_SIZE.setter
     def MAX_QUERY_SIZE(cls, v: int):
-        cls.__set_value(cls.__MAX_QUERY_SIZE, "MAX_QUERY_SIZE", v, 128, 8 * 1024 ** 2)
+        cls.__set_value("__MAX_QUERY_SIZE", "MAX_QUERY_SIZE", v, 128, 8 * 1024 ** 2)
 
     @property
     def MAX_DATA_SIZE(cls) -> int:
@@ -63,7 +63,7 @@ class __TransceiverMeta(type):
     @MAX_DATA_SIZE.setter
     def MAX_DATA_SIZE(cls, v: int):
         cls.__set_value(
-            cls.__MAX_QUERY_SIZE,
+            "__MAX_DATA_SIZE",
             "MAX_DATA_SIZE",
             v,
             516 * 1024 ** 2,

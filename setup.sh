@@ -1,46 +1,64 @@
 #!/bin/bash
 
-# venv を作成するパス（このスクリプトのディレクトリ内に作成）
-VENVPATH="`dirname $0`/venv"
-ABS_VENVPATH=`cd $(dirname ${0}) && pwd`
+# ### const value Start ###
+WARNING="WARNING:"
+ERROR="ERROR:"
+# ### const value  End  ###
 
-echo "<<<  Start Setup.  <<<"
+
+# venv 作成パス
+VENVPATH="`cd $(dirname ${0}) && pwd`/.venv"
+# venv スクリプトパス
+SCRIPTSPATH="$VENVPATH/bin"
+
+echo "###  Start Setup.  ###"
 
 # venv が作成されていれば venv は作成しない
+echo -n "create venv ... "
 if [ ! -e $VENVPATH ]; then
     if [ "$(uname)" == "Darwin" ]; then
         python3 -m venv $VENVPATH
-        echo "Create venv (at $ABS_VENVPATH)"
     elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
         python -m venv $VENVPATH
-        echo "Create venv (at $ABS_VENVPATH)"
     elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
         python3 -m venv $VENVPATH
-        echo "Create venv (at $ABS_VENVPATH)"
     else
         "Unknown OS"
+        exit 0
     fi
+    echo "ok"
 else
-    echo "[Warning]: Already exist venv! Please remove $VENVPATH if you want to setup again."
+    echo "ok"
+    echo "$WARNING Already exist venv! Please remove $VENVPATH if you want to clean setup."
 fi
 
 # venv を有効化
 if [ "$(uname)" == "Darwin" ]; then
     source "$VENVPATH/bin/activate"
 elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
-    . venv/Scripts/activate
+    . "$VENVPATH/Scripts/activate"
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     source "$VENVPATH/bin/activate"
-else
-    "Unknown OS"
 fi
 
-# black: Python コードフォーマッター
-# pylint: コード解析
-pip install black pylint
+echo -n "install library ... "
+# ライブラリインストール
+pip --disable-pip-version-check --quiet install -r "`cd $(dirname ${0}) && pwd`/requirements.txt"
+echo "ok"
 
-# venv を無効化
-deactivate
+echo -e
+# インストール後の環境
+pip --disable-pip-version-check list
 
-echo ">>> Finished Setup. >>>"
+# venv を非アクティブ化
+if [ "$(uname)" == "Darwin" ]; then
+    source "$VENVPATH/bin/deactivate"
+elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
+    deactivate
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    source "$VENVPATH/bin/deactivate"
+fi
+
+echo -e 
+echo "###  Finished Setup.  ###"
 exit 0

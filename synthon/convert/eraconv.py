@@ -20,8 +20,6 @@ class JaCalClass:
 
     def conv_ad2jp(self, date: datetime.date) -> str:
         jp_year = self.conv_year_ad2jp(date)
-        # return f"{self.name}{jp_year}年{date.month}月{date.day}日"
-        # return f"{self.initial}{jp_year}年{date.month}月{date.day}日"
         return f"{self.name}{jp_year if jp_year != 1 else '元'}年{date.month}月{date.day}日"
 
 
@@ -36,7 +34,6 @@ class EraConv:
 
     @classmethod
     def conv_ad2ja(cls, date: datetime.date) -> str:
-        ja_type = None
         if cls.ja_cal[JaCal.M].start_date <= date < cls.ja_cal[JaCal.T].start_date:
             ja_type = JaCal.M
         elif cls.ja_cal[JaCal.T].start_date <= date < cls.ja_cal[JaCal.S].start_date:

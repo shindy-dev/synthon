@@ -3,7 +3,7 @@ author: shindy-dev
 created: 2020/10/25
 github: https://github.com/shindy-dev
 """
-__all__ = ("stopwatch",)
+__all__ = ("StopWatch",)
 
 import datetime
 import time
@@ -39,7 +39,7 @@ class _sw_e:
         return f"{s}{end}".encode(enc)
 
 
-class stopwatch:
+class StopWatch:
     """
     This stopwatch class is a class that measures the processing time of a function.
     - showing the result using "stopwatch.show" function.
@@ -54,11 +54,11 @@ class stopwatch:
             raise TypeError(f"'{type(func)}' object is not callable")
 
         def w(*args: List[Any], **kwargs: Dict[str, Any]) -> Any:
-            s: float = time.time()
+            s: float = time.perf_counter()
             r: Any = func(*args, **kwargs)
             e: _sw_e = _sw_e(
                 func.__qualname__,
-                f"{time.time() - s:.8f}",
+                f"{time.perf_counter() - s:.8f}",
                 datetime.datetime.now().strftime("%F %H:%M:%S.%f"),
             )
             cls._hist.append(e)
@@ -87,20 +87,25 @@ class stopwatch:
             if clear or not exists:
                 f.write(_sw_e._wfmt(_sw_e.log_head(), enc=encoding))
             f.writelines([_sw_e._wfmt(e.log(), enc=encoding) for e in cls._hist])
-
+    
+    @classmethod
+    def clear(cls):
+        cls._hist.clear()
 
 # example
 if __name__ == "__main__":
 
     class SampleClass:
         @classmethod
-        @stopwatch
+        @StopWatch
         def sample_method(cls):
             return [i for i in range(10 ** 6)]
 
-    sample = SampleClass()
-    sample.sample_method()
+    SampleClass().sample_method()
 
     # main
-    stopwatch.show()
-    stopwatch.write("sample.log")
+    StopWatch.show()
+    StopWatch.write("sample.log", clear=True)
+    StopWatch.clear()
+
+
