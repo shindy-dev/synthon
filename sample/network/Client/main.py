@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append("../../../")
+
 from client import MyClient
 
 if __name__ == "__main__":

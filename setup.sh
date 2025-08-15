@@ -15,13 +15,13 @@ echo "###  Start Setup.  ###"
 
 # venv が作成されていれば venv は作成しない
 echo -n "create venv ... "
-if [ ! -e $VENVPATH ]; then
+if [ ! -e "$VENVPATH" ]; then
     if [ "$(uname)" == "Darwin" ]; then
-        python3 -m venv $VENVPATH
+        python3 -m venv "$VENVPATH"
     elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
-        python -m venv $VENVPATH
+        python -m venv "$VENVPATH"
     elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-        python3 -m venv $VENVPATH
+        python3 -m venv "$VENVPATH"
     else
         "Unknown OS"
         exit 0

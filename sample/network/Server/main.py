@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append("../../../")
+
 from server import serve_forever
 
 if __name__ == "__main__":

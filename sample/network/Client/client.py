@@ -1,4 +1,7 @@
-import os
+import sys
+
+sys.path.append("../../")
+
 from synthon.network.client import Client
 
 

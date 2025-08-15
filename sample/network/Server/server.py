@@ -1,5 +1,4 @@
-import os
-from synthon.network.server import ThreadingTCPServer, RequestHandler
+from synthon.network.server import RequestHandler, ThreadingTCPServer
 
 
 class MyRequestHandler(RequestHandler):
